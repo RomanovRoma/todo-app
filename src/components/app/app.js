@@ -59,7 +59,7 @@ export default class App extends Component {
       }
     })
   }
-
+ 
   toggleProperty(arr, id, propName) {
     const idx = arr.findIndex((el) => el.id === id)
 
