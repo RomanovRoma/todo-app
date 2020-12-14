@@ -18,7 +18,8 @@ export default class App extends Component {
       this.createTodoitem('Learn English'),
       this.createTodoitem('Drink tea'),
     ],
-    term: ''
+    term: '',
+    filter: 'all'
   }
 
   createTodoitem(label) {
@@ -99,6 +100,10 @@ export default class App extends Component {
     this.setState({ term })
   }
 
+  onFilterChange = (filter) => {
+    this.setState({ filter })
+  }
+
   search(arr, term) {
     if(term.length === 0) {
       return arr
@@ -107,11 +112,25 @@ export default class App extends Component {
     return arr.filter((el) => el.label.toLowerCase().indexOf(term.toLowerCase()) > -1)
   }
 
+  filter(arr, filter) {
+
+    switch(filter) {
+      case 'all':
+        return arr
+      case 'active':
+        return arr.filter((el) => !el.done)
+      case 'done':
+        return arr.filter((el) => el.done)
+      default:
+        return arr
+    }
+  }
+
   render() {
 
-    const { todoData, term } = this.state
+    const { todoData, term, filter } = this.state
 
-    const visibleItems = this.search(todoData, term)
+    const visibleItems = this.filter(this.search(todoData, term), filter)
 
     const doneCount = todoData
                       .filter((el) => el.done).length
@@ -125,7 +144,9 @@ export default class App extends Component {
         <div className="top-panel d-flex">
           <SearchPanel
             onSearchChange={this.onSearchChange} />
-          <ItemStatusFilter />
+          <ItemStatusFilter
+            filter={filter}
+            onFilterChange={this.onFilterChange} />
         </div>
         <TodoList
           todos={visibleItems}
